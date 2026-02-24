@@ -229,6 +229,20 @@
       width:0%;
       background: linear-gradient(90deg, rgba(245,180,0,.9), rgba(45,212,191,.9));
     }
+
+    /* Admin list (modal) */
+    .adminBtn{
+      width:100%;
+      text-align:left;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      border-radius: 16px;
+      padding: 14px 14px;
+      cursor:pointer;
+    }
+    .adminBtn b{display:block; font-size:15px;}
+    .adminBtn small{display:block; color:var(--muted); margin-top:4px; font-size:12px;}
   </style>
 </head>
 <body>
@@ -283,7 +297,7 @@
     <div class="footer">Copyright © island.net Created 2026</div>
   </div>
 
-  <!-- MODAL -->
+  <!-- MODAL PANDUAN -->
   <div class="backdrop" id="backdrop" role="dialog" aria-modal="true">
     <div class="modal">
       <h2 id="modalTitle">Panduan</h2>
@@ -291,6 +305,17 @@
       <div class="actions">
         <button class="ghost" id="closeModal">Tutup</button>
         <button class="primary" id="doAction">Buka Login</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL ADMIN (BARU, RAPI) -->
+  <div class="backdrop" id="adminBackdrop" role="dialog" aria-modal="true">
+    <div class="modal">
+      <h2>Pilih Admin WhatsApp</h2>
+      <div id="adminList" style="display:grid; gap:10px; margin-top:10px;"></div>
+      <div class="actions">
+        <button class="ghost" id="closeAdmin">Tutup</button>
       </div>
     </div>
   </div>
@@ -310,34 +335,15 @@
 
 <script>
   // === KONFIGURASI (EDIT DI SINI) ===
-  // Kalau server 2/3 ternyata URL login berbeda, ubah masing-masing.
   const CONFIG = {
-  server2: { name: "Server 2", loginUrl: "https://ebilling.island-net.id:4434/island/login.php" },
-  server3: { name: "Server 3", loginUrl: "https://ebilling.island-net.id:4434/island/login.php" },
-
-  admins: [
-    { name: "Admin 1 (CS)", phone: "6289529604196" },
-    { name: "Admin 2 (Teknisi)", phone: "6289620260001" },
-     { name: "Admin 3", phone: "62812345678911" }
-  ]
-};
-
-function contactAdmin() {
-  const id = ($("cust").value || "").trim();
-  const msg = `Halo Admin Island.Net, saya butuh bantuan login/bayar e-billing. ID Pelanggan: ${id || "(belum diisi)"}`;
-
-  // bikin pilihan admin
-  const labels = CONFIG.admins.map((a, i) => `${i+1}. ${a.name} (${a.phone})`).join("\n");
-  const choice = prompt(
-    "Pilih Admin yang ingin dihubungi:\n\n" + labels + "\n\nKetik angka (contoh: 1)"
-  );
-
-  const idx = parseInt(choice, 10) - 1;
-  if (Number.isNaN(idx) || idx < 0 || idx >= CONFIG.admins.length) return;
-
-  const waUrl = `https://wa.me/${CONFIG.admins[idx].phone}?text=${encodeURIComponent(msg)}`;
-  window.open(waUrl, "_blank");
-}
+    server2: { name: "Server 2", loginUrl: "https://ebilling.island-net.id:4434/island/login.php" },
+    server3: { name: "Server 3", loginUrl: "https://ebilling.island-net.id:4434/island/login.php" },
+    admins: [
+      { name: "Admin 1 (CS)", phone: "6289529604196" },
+      { name: "Admin 2 (Teknisi)", phone: "6289620260001" },
+      { name: "Admin 3", phone: "62812345678911" }
+    ]
+  };
 
   // === PWA: register service worker ===
   if ("serviceWorker" in navigator) {
@@ -364,7 +370,6 @@ function contactAdmin() {
     $("overlayText").innerHTML = htmlText;
     $("overlay").style.display = "flex";
 
-    // progress bar effect
     $("barFill").style.width = "0%";
     let start = null;
     const duration = 2400;
@@ -379,7 +384,7 @@ function contactAdmin() {
 
   function goPending() {
     if (!pendingUrl) return;
-    window.open(pendingUrl, "_blank"); // buka tab baru biar portal tetap ada
+    window.open(pendingUrl, "_blank");
     $("overlay").style.display = "none";
     pendingUrl = null;
   }
@@ -442,6 +447,36 @@ function contactAdmin() {
   $("closeModal").addEventListener("click", closeModal);
   $("backdrop").addEventListener("click", (e)=>{ if(e.target.id==="backdrop") closeModal(); });
 
+  // ===== Modal Admin yang rapi (ganti prompt) =====
+  function openAdminModal() {
+    const id = ($("cust").value || "").trim();
+    const msg = `Halo Admin Island.Net, saya butuh bantuan login/bayar e-billing. ID Pelanggan: ${id || "(belum diisi)"}`;
+
+    const list = $("adminList");
+    list.innerHTML = "";
+
+    CONFIG.admins.forEach((a) => {
+      const btn = document.createElement("button");
+      btn.className = "adminBtn";
+      btn.innerHTML = `<b>${a.name}</b><small>${a.phone}</small>`;
+      btn.addEventListener("click", () => {
+        const waUrl = `https://wa.me/${a.phone}?text=${encodeURIComponent(msg)}`;
+        window.open(waUrl, "_blank");
+        closeAdminModal();
+      });
+      list.appendChild(btn);
+    });
+
+    $("adminBackdrop").style.display = "flex";
+  }
+
+  function closeAdminModal() {
+    $("adminBackdrop").style.display = "none";
+  }
+
+  $("closeAdmin").addEventListener("click", closeAdminModal);
+  $("adminBackdrop").addEventListener("click", (e)=>{ if(e.target.id==="adminBackdrop") closeAdminModal(); });
+
   // actions
   $("btnPay").addEventListener("click", ()=>{
     const serverName = CONFIG[selectedServer].name;
@@ -459,9 +494,9 @@ function contactAdmin() {
   $("guidePay").addEventListener("click", (e)=>{e.preventDefault(); openModal("pay");});
 
   $("waAdmin").addEventListener("click", (e)=>{
-  e.preventDefault();
-  contactAdmin();
-});
+    e.preventDefault();
+    openAdminModal();
+  });
 
   $("cancelGo").addEventListener("click", closeOverlay);
   $("goNow").addEventListener("click", goPending);
