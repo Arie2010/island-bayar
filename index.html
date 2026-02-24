@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Island.Net — Bayar Cepat</title>
-  <meta name="description" content="Bayar tagihan Island.Net dengan panduan cepat (Login → Bayar → QRIS/GoPay)." />
+  <meta name="description" content="Bayar tagihan Island.Net dengan panduan cepat (Login → Bayar → QRIS)." />
 
   <!-- PWA -->
   <link rel="manifest" href="manifest.json">
@@ -251,7 +251,7 @@
       <div class="logo">IN</div>
       <div>
         <h1>Island.Net — Bayar Cepat</h1>
-        <p>Login → Bayar → QRIS (bisa GoPay/Gojek). Dibuat simpel seperti aplikasi.</p>
+        <p>Login → Bayar → QRIS . Dibuat simpel seperti aplikasi.</p>
       </div>
     </div>
 
@@ -279,7 +279,7 @@
 
       <div class="btns">
         <button class="primary" id="btnPay">LOGIN & BAYAR TAGIHAN</button>
-        <button class="ghost" id="btnGuide">PANDUAN BAYAR (QRIS/GoPay)</button>
+        <button class="ghost" id="btnGuide">PANDUAN BAYAR QRIS</button>
       </div>
 
       <div class="mini">
@@ -339,9 +339,9 @@
     server2: { name: "Server 2", loginUrl: "https://ebilling.island-net.id:4434/island/login.php" },
     server3: { name: "Server 3", loginUrl: "https://ebilling.island-net.id:4434/island/login.php" },
     admins: [
-      { name: "Admin 1 (CS)", phone: "6289529604196" },
-      { name: "Admin 2 (Teknisi)", phone: "6289620260001" },
-      { name: "Admin 3", phone: "62812345678911" }
+      { name: "Admin 1 (Kantor)", phone: "6289666600202" },
+      { name: "Admin 2 (Teknisi)", phone: "6289501233337" },
+      { name: "Admin 3 (Pembayaran)", phone: "62895321010615" }
     ]
   };
 
@@ -412,12 +412,12 @@
     }
 
     if(type === "pay"){
-      title = "Panduan Bayar QRIS (GoPay/Gojek)";
+      title = "Panduan Bayar QRIS";
       steps = [
         {n:1, t:"Login ke e-billing.", s:"Siapkan Account, Username, Password."},
         {n:2, t:"Buka menu <b>Tagihan/Transaksi</b> dan pilih tagihan bulan ini.", s:"Pastikan statusnya <b>Belum Lunas</b>."},
         {n:3, t:"Klik <b>Bayar</b> → pilih <b>QR Payments (QRIS)</b>.", s:"Nominal akan tampil di checkout."},
-        {n:4, t:"Buka <b>Gojek → GoPay → Scan</b>, scan QR lalu bayar.", s:"Cek nama/nominal sebelum konfirmasi."},
+      //  {n:4, t:"Buka <b>Gojek → GoPay → Scan</b>, scan QR lalu bayar.", s:"Cek nama/nominal sebelum konfirmasi."},
         {n:5, t:"Setelah bayar, tunggu 1–3 menit lalu cek status.", s:"Hindari bayar 2x."}
       ];
     }
@@ -484,7 +484,7 @@
     showOverlay(
       "Login untuk Bayar Tagihan",
       `Pilih <b>${serverName}</b> lalu login.<br><br>
-       Setelah login: <b>Tagihan/Transaksi → Bayar → QRIS</b> (bisa GoPay/Gojek).`,
+       Setelah login: <b>Tagihan/Transaksi → Bayar → QRIS</b>.`,
       url
     );
   });
