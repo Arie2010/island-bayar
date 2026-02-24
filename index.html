@@ -256,7 +256,7 @@
     </div>
 
     <div class="card">
-      <label for="cust">ID Pelanggan (opsional, untuk memudahkan)</label>
+      <label for="cust">ID Pelanggan (wajib jika ingin Hubungi Admin)</label>
       <input id="cust" inputmode="numeric" placeholder="Contoh: 002459" />
 
       <label style="margin-top:12px;">Pilih Server Login (biasanya Server 2 / Server 3)</label>
@@ -309,7 +309,7 @@
     </div>
   </div>
 
-  <!-- MODAL ADMIN (BARU, RAPI) -->
+  <!-- MODAL ADMIN -->
   <div class="backdrop" id="adminBackdrop" role="dialog" aria-modal="true">
     <div class="modal">
       <h2>Pilih Admin WhatsApp</h2>
@@ -354,6 +354,17 @@
   let pendingUrl = null;
 
   const $ = (id) => document.getElementById(id);
+
+  // ===== Simpan ID pelanggan agar tidak perlu ketik ulang =====
+  const SAVED_KEY = "island_customer_id";
+  window.addEventListener("load", () => {
+    const saved = localStorage.getItem(SAVED_KEY);
+    if (saved) $("cust").value = saved;
+  });
+  $("cust").addEventListener("input", () => {
+    const v = ($("cust").value || "").trim();
+    if (v) localStorage.setItem(SAVED_KEY, v);
+  });
 
   // server picker
   document.querySelectorAll(".chip").forEach(chip => {
@@ -417,8 +428,7 @@
         {n:1, t:"Login ke e-billing.", s:"Siapkan Account, Username, Password."},
         {n:2, t:"Buka menu <b>Tagihan/Transaksi</b> dan pilih tagihan bulan ini.", s:"Pastikan statusnya <b>Belum Lunas</b>."},
         {n:3, t:"Klik <b>Bayar</b> → pilih <b>QR Payments (QRIS)</b>.", s:"Nominal akan tampil di checkout."},
-      //  {n:4, t:"Buka <b>Gojek → GoPay → Scan</b>, scan QR lalu bayar.", s:"Cek nama/nominal sebelum konfirmasi."},
-        {n:5, t:"Setelah bayar, tunggu 1–3 menit lalu cek status.", s:"Hindari bayar 2x."}
+        {n:4, t:"Setelah bayar, tunggu 1–3 menit lalu cek status.", s:"Hindari bayar 2x."}
       ];
     }
 
@@ -447,10 +457,17 @@
   $("closeModal").addEventListener("click", closeModal);
   $("backdrop").addEventListener("click", (e)=>{ if(e.target.id==="backdrop") closeModal(); });
 
-  // ===== Modal Admin yang rapi (ganti prompt) =====
+  // ===== Modal Admin: WAJIB ID pelanggan =====
   function openAdminModal() {
     const id = ($("cust").value || "").trim();
-    const msg = `Halo Admin Island.Net, saya butuh bantuan login/bayar e-billing. ID Pelanggan: ${id || "(masukan id member/id pelanggan masing-masing)"}`;
+
+    if (!id) {
+      alert("Silakan isi ID Pelanggan dulu agar admin bisa cepat membantu.");
+      $("cust").focus();
+      return;
+    }
+
+    const msg = `Halo Admin Island.Net, saya butuh bantuan login/bayar e-billing. ID Pelanggan: ${id}`;
 
     const list = $("adminList");
     list.innerHTML = "";
