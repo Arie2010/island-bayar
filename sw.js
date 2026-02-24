@@ -1,4 +1,4 @@
-const CACHE_NAME = "island-bayar-v5";
+const CACHE_NAME = "island-bayar-v6";
 const ASSETS = [
   "./",
   "./index.html",
