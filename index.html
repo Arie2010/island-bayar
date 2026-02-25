@@ -44,12 +44,19 @@
       padding:10px 6px 16px 6px;
     }
     .logo{
-      width:44px; height:44px; border-radius:12px;
-      background: linear-gradient(135deg, rgba(245,180,0,.95), rgba(245,180,0,.45));
-      box-shadow: var(--shadow);
-      display:grid; place-items:center;
-      font-weight:900; color:#2a1b00;
-    }
+  width:44px; height:44px; border-radius:12px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  display:grid; place-items:center;
+  overflow:hidden;
+}
+.logo img{
+  width:100%;
+  height:100%;
+  object-fit: contain;   /* logo tidak kepotong */
+  padding: 5px;          /* biar tidak mepet */
+}
     .brand h1{font-size:18px; margin:0; letter-spacing:.2px;}
     .brand p{margin:2px 0 0 0; color:var(--muted); font-size:13px}
 
@@ -248,7 +255,9 @@
 <body>
   <div class="wrap">
     <div class="brand">
-      <div class="logo">IN</div>
+      <div class="logo">
+  <img src="icons/logo-islandnet.png" alt="ISLAND.NET" />
+</div>
       <div>
         <h1>Island.Net — Bayar Cepat</h1>
         <p>Login → Bayar → QRIS . Dibuat simpel seperti aplikasi.</p>
